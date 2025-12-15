@@ -84,6 +84,15 @@
 
 <img src="docs/images/帥氣視障代理視覺帽1.jpg" width="400" alt="帥氣視障代理視覺帽" />
 
+
+---
+
+### 2.4 示範影片 (Demo Video)
+
+[![Smart Cane Demo](https://img.youtube.com/vi/_2WLYP5ei2A/0.jpg)](https://youtube.com/shorts/_2WLYP5ei2A?feature=share)
+
+[點此觀看示範影片](https://youtube.com/shorts/_2WLYP5ei2A?feature=share)
+
 ---
 
 ## 3. 系統軟體架構 (Software Architecture)
