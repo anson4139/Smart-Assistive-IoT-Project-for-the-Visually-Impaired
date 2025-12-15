@@ -1,0 +1,7 @@
+numpy<1.22.0
+opencv-python
+pyserial
+pytest
+requests
+pyttsx3
+openvino-dev==2022.3.0

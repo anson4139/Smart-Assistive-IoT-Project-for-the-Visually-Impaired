@@ -1,0 +1,25 @@
+{
+  "photo": null,
+  "description": "voice_distance_alert",
+  "response": {
+    "voice_text": "前方有 person，距離約 1.5 公尺，請注意",
+    "voice_source": "NAN",
+    "rewritten_voice_text": "前方有 person，距離約 1.5 公尺，請注意",
+    "event": {
+      "event_id": "test",
+      "ts": "2025-12-01T00:28:52.883208",
+      "type": "person",
+      "source": "camera",
+      "severity": "mid",
+      "distance_m": 1.5,
+      "direction": null,
+      "object_label": "person",
+      "extra": {}
+    }
+  },
+  "ts": "2025-12-01T00:28:52.885938",
+  "tags": [
+    "voice",
+    "distance"
+  ]
+}

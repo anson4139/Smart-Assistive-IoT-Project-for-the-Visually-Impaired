@@ -1,0 +1,8 @@
+conda activate smartcane311
+
+
+建議手動重啟：我無法直接重啟你的 VS Code，但你可以按 Ctrl+Shift+P 再輸入 Reload Window 來重新載入整個編輯器
+
+若你還想快速度過這個步驟，臨時可以在 smartcane311 terminal 執行
+$env:PATH += ';C:\Users\anson\AppData\Local\Programs\Ollama'
+ollama list

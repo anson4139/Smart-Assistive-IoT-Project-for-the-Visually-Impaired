@@ -1,0 +1,27 @@
+{
+  "photo": "img_20251121031441.jpg",
+  "description": "voice_distance_alert",
+  "response": {
+    "voice_text": "前方有 person，距離約 1.0 公尺，請注意",
+    "voice_source": "NAN",
+    "rewritten_voice_text": "前方有 person，距離約 1.0 公尺，請注意",
+    "event": {
+      "event_id": "48836021-6d15-48ef-95cc-75564a960c0f",
+      "ts": "2025-11-20T19:14:41.549011+00:00",
+      "type": "vision.person",
+      "source": "camera",
+      "severity": "high",
+      "distance_m": 1.0223642172523961,
+      "direction": "right",
+      "object_label": null,
+      "extra": {
+        "confidence": 0.5903348326683044
+      }
+    }
+  },
+  "ts": "2025-11-21T03:14:46.608256",
+  "tags": [
+    "voice",
+    "distance"
+  ]
+}

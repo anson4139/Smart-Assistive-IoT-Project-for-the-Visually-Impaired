@@ -1,0 +1,27 @@
+{
+  "photo": "img_20251121223559.jpg",
+  "description": "voice_distance_alert",
+  "response": {
+    "voice_text": "前方有 person，距離約 1.1 公尺，請注意",
+    "voice_source": "Ollama",
+    "rewritten_voice_text": "在您右前方大約一公尺一十公分的地方，有一位行人，請特別留意。",
+    "event": {
+      "event_id": "3869d8e3-3aec-4876-8574-c7223fc6dbb8",
+      "ts": "2025-11-21T14:36:00.283931+00:00",
+      "type": "vision.person",
+      "source": "camera",
+      "severity": "high",
+      "distance_m": 1.0702341137123745,
+      "direction": "right",
+      "object_label": null,
+      "extra": {
+        "confidence": 0.8598253130912781
+      }
+    }
+  },
+  "ts": "2025-11-21T22:36:14.773116",
+  "tags": [
+    "voice",
+    "distance"
+  ]
+}

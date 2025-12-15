@@ -1,0 +1,27 @@
+{
+  "photo": "img_20251121034239.jpg",
+  "description": "understanding_summary",
+  "response": {
+    "summary": "Ollama summary [http://localhost:11434/gpt-oss:120b-cloud]: vision.person@camera (high)",
+    "events": [
+      {
+        "event_id": "836bfb6a-1b42-4041-8493-d872ef3f98b9",
+        "ts": "2025-11-20T19:42:39.468821+00:00",
+        "type": "vision.person",
+        "source": "camera",
+        "severity": "high",
+        "distance_m": 0.8695652173913043,
+        "direction": "center",
+        "object_label": null,
+        "extra": {
+          "confidence": 0.537463366985321
+        }
+      }
+    ]
+  },
+  "ts": "2025-11-21T03:42:50.101390",
+  "tags": [
+    "voice",
+    "understanding"
+  ]
+}

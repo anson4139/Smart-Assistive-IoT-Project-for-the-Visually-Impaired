@@ -1,0 +1,25 @@
+{
+  "photo": "img_20251213231630.jpg",
+  "description": "voice_distance_alert",
+  "response": {
+    "voice_text": "前方有 drop，距離約 0.3 公尺，請注意",
+    "voice_source": "NAN",
+    "rewritten_voice_text": "前方有 drop，距離約 0.3 公尺，請注意",
+    "event": {
+      "event_id": "e3117b15-c2c8-410b-85b8-a8f3b261d001",
+      "ts": "2025-12-13T15:16:31.130731+00:00",
+      "type": "tof.drop",
+      "source": "tof",
+      "severity": "high",
+      "distance_m": 0.258,
+      "direction": "down",
+      "object_label": null,
+      "extra": {}
+    }
+  },
+  "ts": "2025-12-13T23:16:38.241268",
+  "tags": [
+    "voice",
+    "distance"
+  ]
+}

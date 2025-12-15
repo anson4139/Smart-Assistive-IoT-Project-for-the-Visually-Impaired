@@ -1,0 +1,7 @@
+numpy
+opencv-python
+pyserial
+pytest
+requests
+pyttsx3
+openvino==2025.3.0
