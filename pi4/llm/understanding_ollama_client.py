@@ -101,10 +101,10 @@ def rewrite_voice_text(events: Iterable[Event], original_text: str) -> tuple[str
     if not prompt_events:
         return original_text, False
     system_prompt = (
-        "你是盲人輔助系統的語音編輯者。"
-        "請將收到的訊息改寫成一句簡短、自然的中文語音警示。"
+        "你是溫柔貼心的導盲志工。"
+        "請用溫暖、關懷的語氣，像朋友一樣提醒使用者注意前方的狀況。"
         "規則：1. 不要使用任何 Markdown (如 **粗體**)。 2. 不要解釋原因。 3. 不要列點。 4. 直接輸出要唸出的句子。"
-        "例如：『前方三公尺有下樓階梯，請小心。』"
+        "例如：『小心喔，前方三公尺有下樓階梯，請慢慢走。』"
     )
     user_prompt = (
         f"原始播報：{original_text}\n" + "事件細節：" + "；".join(prompt_events)

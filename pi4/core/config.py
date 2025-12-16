@@ -44,7 +44,7 @@ SIM_TOF_DATA_PATH: str = os.getenv("SMART_CANE_SIM_TOF", "./data/tof_simulated.j
 SIM_TOF_INTERVAL_SEC: float = float(os.getenv("SMART_CANE_SIM_TOF_INTERVAL", "0.1"))
 
 # Safety 門檻
-PERSON_NEAR_DISTANCE_M: float = float(os.getenv("SMART_CANE_PERSON_NEAR", "1.5"))
+PERSON_NEAR_DISTANCE_M: float = float(os.getenv("SMART_CANE_PERSON_NEAR", "2.5"))
 CAR_APPROACHING_MIN_DISTANCE_M: float = float(os.getenv("SMART_CANE_CAR_APPROACHING", "3.0"))
 VISION_FOCAL_LENGTH: float = float(os.getenv("SMART_CANE_VISION_FOCAL_LENGTH", "200"))
 PERSON_ACTUAL_HEIGHT_M: float = float(os.getenv("SMART_CANE_PERSON_HEIGHT", "1.6"))
@@ -60,8 +60,8 @@ DANGER_EVENT_WINDOW_SEC: float = float(os.getenv("SMART_CANE_DANGER_WINDOW", "2.
 MAIN_LOOP_INTERVAL_SEC: float = float(os.getenv("SMART_CANE_MAIN_LOOP_INTERVAL", "0.02"))
 
 # Trigger Logic
-TRIGGER_DISTANCE_MM: int = int(os.getenv("SMART_CANE_TRIGGER_DISTANCE", "1200"))
-TRIGGER_COOLDOWN_SEC: float = float(os.getenv("SMART_CANE_TRIGGER_COOLDOWN", "2.0"))
+TRIGGER_DISTANCE_MM: int = int(os.getenv("SMART_CANE_TRIGGER_DISTANCE", "2500"))
+TRIGGER_COOLDOWN_SEC: float = float(os.getenv("SMART_CANE_TRIGGER_COOLDOWN", "5.0"))
 
 # LLM
 LLM_TIMEOUT_SEC: float = 15.0
