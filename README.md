@@ -112,7 +112,18 @@ smart_cane/
 └─ run_pipeline.py       # 程式入口點
 ```
 
-### 3.2 核心模組設設計 (摘要)
+### 3.2 清理與 git 忽略清單
+- 建議把測試／執行時產生的資料從版本序列中剔除：
+   ```bash
+   git clean -xdf data/analyze data/img logs __pycache__
+   git checkout -- pi4/__pycache__ pi4/core/__pycache__ pi4/llm/__pycache__ pi4/safety/__pycache__ pi4/voice/__pycache__ tests/__pycache__
+   git checkout -- logs/smart_cane.log                  # 若你不打算保留 log
+   git checkout -- data/tof_simulated.json              # 若使用實體 ToF，不用 commit 這個模擬檔
+   ```
+- 建立 `.gitignore` 列出：`logs/`、`data/analyze/`、`data/img/`、`__pycache__/`、`*.pyc`、`*.log`，確保未來 `git status` 不會再提醒。  
+- 若這些資料已經被 commit，先 `git rm --cached` 這些檔，再 `git push`。
+
+### 3.3 核心模組設設計 (摘要)
 * **Orchestrator (`orchestrator.py`)**：中央指揮官，訂閱 EventBus，整合視覺與距離事件，決策是否發出警示。
 * **Vision Safety (`vision_safety.py`)**：載入 MobileNet-SSD 模型，偵測人/車/物。
 * **LLM Client (`understanding_ollama_client.py`)**：
@@ -121,6 +132,70 @@ smart_cane/
 * **Voice Output (`voice_output.py`)**：
     * 實作優先權佇列 (Priority Queue)。
     * 呼叫 `edge-tts` (Python subprocess) 生成 MP3 並播放。
+
+### 3.4 關鍵程式碼實作 (Key Code Implementation)
+
+**A. 核心指揮 (Orchestrator)**
+*整合視覺、距離感測與語音的決策中樞 (pi4/core/orchestrator.py)*
+```python
+def _process_safety(self) -> None:
+    # 1. 讀取 ToF 距離 triggers
+    distance = tof_receiver.read_latest_distance()
+    if distance is None: return
+
+    # 2. 喚醒相機進行物件偵測
+    frame = camera_capture.get_frame()
+    camera_events = vision_safety.process_frame(frame)
+    
+    # 3. 結合 Safety Rules 判斷危險等級
+    for event in camera_events:
+        if event.severity in ("high", "critical"):
+            # 4. 觸發語音與 LINE 通知
+            voice_text = f"前方有 {event.label}，距離 {event.distance_m} 公尺"
+            self.voice.speak(voice_text, priority="high")
+            self.line_notifier.send(voice_text)
+```
+
+**B. 自然語言處理 (LLM Client)**
+*將生硬警示轉化為溫柔語音 (pi4/llm/understanding_ollama_client.py)*
+```python
+def rewrite_voice_text(self, events, original_text):
+    # 提示工程 (Prompt Engineering)
+    system_prompt = "你是溫柔貼心的導盲志工...請用溫暖語氣提醒..."
+    payload = {
+        "model": "gemma2:2b",  # 自動使用輕量模型
+        "messages": [{"role": "user", "content": original_text}]
+    }
+    # 呼叫 Ollama API
+    response = requests.post(f"{OLLAMA_BASE_URL}/v1/chat/completions", json=payload)
+    return response.json()['choices'][0]['message']['content']
+```
+
+**C. 語音輸出 (Voice Output)**
+*優先權佇列與 Edge-TTS 整合 (pi4/voice/voice_output.py)*
+```python
+def speak(self, text, priority="mid"):
+    # 使用 Heap Queue 實作優先權 (High 插隊, Low 排隊)
+    heapq.heappush(self._queue, (_PRIORITY_MAP[priority], text))
+    
+    # 呼叫 Edge-TTS 生成高品質語音
+    subprocess.run(["python3", "-m", "edge_tts", "--text", text, "--write-media", "/tmp/tts.mp3"])
+    subprocess.run(["mpg123", "/tmp/tts.mp3"])
+```
+
+**D. 拐杖端韌體 (Pico Firmware)**
+*ToF 測距與 JSON 串流 (pico_firmware/src/main.py)*
+```python
+while True:
+    d = sensor.read()
+    # 當距離小於 1.2公尺 時觸發
+    if d > 0 and d < 1200:
+        if utime.ticks_diff(now, last_trigger) > 2000:
+            # 透過 USB Serial 傳送 JSON 給 Pi
+            print(ujson.dumps({"event":"trigger", "d_mm": d}))
+            last_trigger = now
+    utime.sleep_ms(100)
+```
 
 ---
 
@@ -170,12 +245,31 @@ python3 run_pipeline.py
 ```
 
 ### 5.2 選單功能說明
+
 * **[1] 執行全部單元測試**：檢查程式邏輯正確性。
 * **[4] 測試 Ollama 連線**：確認 LLM 服務是否活著。
 * **[7] 實機全流程 (Production Mode)**：
     * 啟動 Safety Layer (Vision + ToF)。
     * 進入 Event-Triggered 模式 (有距離觸發才拍照)。
     * 整合 Edge-TTS 語音播報。
+
+### 5.3 執行畫面預覽 (Operation Preview)
+
+**1. 系統主選單 (Menu)** 
+*(提供單元測試、連線測試與全流程執行選項)*
+
+<img src="docs/images/執行run_pipeline的選單.jpg" width="400" alt="執行選單" />
+
+**2. 語音發送與 Console 監控** 
+*(LLM 成功將「前方有坑洞」改寫為「溫柔導盲志工」風格)*
+
+<img src="docs/images/語音發送的文字.jpg" width="700" alt="Console顯示語音文字" />
+
+**3. LINE 照護者通知** 
+*(手機端即時收到現場照片與文字回報)*
+
+<img src="docs/images/收到拐杖line資訊.jpg" width="350" alt="LINE通知截圖" />
+
 
 ---
 
@@ -202,6 +296,7 @@ python3 run_pipeline.py
 ---
 
 ## 7. 未來展望
+
 * **完全離線化**：評估在 Pi 5 上運行更輕量的 SLM (Small Language Model) 與 VITS 語音模型，擺脫網路依賴。
 * **防水機構**：設計 IP65 等級的 3D 列印外殼。
 * **多模態整合**：結合 VQA (Vision QA) 模型，讓使用者能詢問「前方是什麼店？」等更複雜問題。

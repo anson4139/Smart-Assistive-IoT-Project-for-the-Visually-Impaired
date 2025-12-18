@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import time
 import uuid
+import threading
 from datetime import datetime, timezone
 from typing import Iterable
 
@@ -23,6 +24,7 @@ from pi4.llm import (conversation_chatgpt_client,
 from pi4.safety.cane_client import cane_safety, tof_receiver
 from pi4.safety.vision import camera_capture, vision_safety
 from pi4.voice.voice_output import VoiceOutput
+from pi4.voice.line_api_message import LineNotifier
 
 logger = get_logger("orchestrator")
 
@@ -46,7 +48,9 @@ class Orchestrator:
         self.recent_camera_events: list[Event] = []
         self.recent_cane_events: list[Event] = []
         self.recent_danger_events: list[Event] = []
+        self.recent_danger_events: list[Event] = []
         self.bus.subscribe("danger.events", self._collect_danger_event)
+        self.line_notifier = LineNotifier()
 
     def _wait_for_voice_idle(self) -> None:
         if self.voice.is_busy():
@@ -58,6 +62,10 @@ class Orchestrator:
         self.recent_danger_events.append(payload)
         window_limit = int(1 / max(MAIN_LOOP_INTERVAL_SEC, 0.01))
         self.recent_danger_events = self.recent_danger_events[-window_limit:]
+
+    # Add cooldown for LINE to prevent 429 errors
+    _last_line_sent_time: float = 0.0
+    _LINE_COOLDOWN_SEC: float = 3.0
 
     def _publish_events(self, topic: str, events: Iterable[Event]) -> None:
         for event in events:
@@ -138,6 +146,29 @@ class Orchestrator:
                     "voice_distance_alert",
                     tags=["voice", "distance"],
                 )
+                
+                # LINE Notification for Caregiver (High Severity only) with Cooldown
+                # LINE Notification for Caregiver (High Severity only) with Cooldown
+                now = time.time()
+                if event.severity in ("high", "critical"):
+                    if now - self._last_line_sent_time > self._LINE_COOLDOWN_SEC:
+                        self._last_line_sent_time = now
+                        
+                        def _send_line_async(evt, txt):
+                            try:
+                                caregiver_text = understanding_ollama_client.rewrite_caregiver_text(
+                                    [evt], txt
+                                )
+                                self.line_notifier.send(caregiver_text)
+                            except Exception as e:
+                                logger.error(f"Failed to send LINE alert: {e}")
+
+                        # Run in background to avoid blocking detection loop
+                        threading.Thread(
+                            target=_send_line_async, 
+                            args=(event, voice_text), 
+                            daemon=True
+                        ).start()
 
     def process_safety_once(self) -> None:
         """公開方法：單次執行 Safety Layer，方便外部調度。"""
