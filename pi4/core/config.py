@@ -102,10 +102,10 @@ MICROPHONE_INDEX: int | None = int(os.getenv("SMART_CANE_MICROPHONE_INDEX", "1")
 ALERT_VOICE_COOLDOWN_SEC: float = float(os.getenv("SMART_CANE_ALERT_COOLDOWN", "1.0"))
 
 # LINE Messaging API 設定（可直接在 config.py 內寫死）
-LINE_CHANNEL_ACCESS_TOKEN: str | None = "qk8lVIzCOe0lJ0eJ9362H7X9jcWsjOhjbULPzLhiNHN9C+HlF4sKF/UVQTrRAFwTiyGAtvbFbvJbY4XMS4SzkjB4hk6KX1ha9Ljmm3AqOFDSpQnyuBzfrSiFuTT5Gm64BEgS9sFF71i8Wu5RP/jwZgdB04t89/1O/w1cDnyilFU="
-LINE_CHANNEL_SECRET: str | None = "PASTE_YOUR_CHANNEL_SECRET_HERE"
-LINE_TARGET_USER_ID: str | None = "U58f2e37ee1ccebb07d8f437c4fa5f976"
-LINE_MESSAGING_API_URL: str = "https://api.line.me/v2/bot/message/push"
+LINE_CHANNEL_ACCESS_TOKEN: str | None = os.getenv("SMART_CANE_LINE_CHANNEL_ACCESS_TOKEN")
+LINE_CHANNEL_SECRET: str | None = os.getenv("SMART_CANE_LINE_CHANNEL_SECRET", "PASTE_YOUR_CHANNEL_SECRET_HERE")
+LINE_TARGET_USER_ID: str | None = os.getenv("SMART_CANE_LINE_TARGET_USER_ID")
+LINE_MESSAGING_API_URL: str = os.getenv("SMART_CANE_LINE_MESSAGING_API_URL", "https://api.line.me/v2/bot/message/push")
 
 # logging
 LOG_LEVEL: str = os.getenv("SMART_CANE_LOG_LEVEL", "INFO")

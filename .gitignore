@@ -9,3 +9,5 @@ __pycache__/
 data/tof_simulated.json
 smart_cane_bundle.txt
 error*.log
+verify_line_token.py
+smart_cane_bundle.txt
