@@ -3,8 +3,9 @@ data/analyze/
 data/img/
 logs/*.log
 *.log
-*.pyc
+**/*.pyc
 __pycache__/
+**/__pycache__/
 data/tof_simulated.json
 smart_cane_bundle.txt
 error*.log
